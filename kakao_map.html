@@ -7,6 +7,7 @@
 	</head>
 	<body>
 	<div id="map" style="width:100%;height:65%;"></div>
+	<input type="button" onclick="btn_my_gps_click()" value="내위치" />
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8c0dbdd57a9cf19e4f4da0d2213ae714"></script>
 	<script>
 		var container = document.getElementById('map');
@@ -22,14 +23,13 @@
 		map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
 
 		// 마커
-		var marker = new kakao.maps.Marker({
-			
-		});
+		var marker = new kakao.maps.Marker(),
+		infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 
-		// 지도에 클릭 이벤트를 등록합니다
+		// 지도에 오른쪽클릭 이벤트를 등록합니다
 		// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+		// rightclick == [Mobile]LongPress
 		kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {        
-			
 			// 클릭한 위도, 경도 정보를 가져옵니다 
 			var latlng = mouseEvent.latLng;
 
@@ -40,11 +40,47 @@
 			message += '경도는 ' + latlng.getLng() + ' 입니다';
 
 			console.log(message);
-			
-			//var resultDiv = document.getElementById('result'); 
-			//resultDiv.innerHTML = message;
 
+			searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+				if (status === kakao.maps.services.Status.OK) {
+					var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+		            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+            
+				    var content = '<div class="bAddr">' +
+								  '<span class="title">법정동 주소정보</span>' + 
+		                            detailAddr + 
+					              '</div>';
+					
+					// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+					infowindow.setContent(content);
+					infowindow.open(map, marker);
+				}
+			});
 		});
+
+		function searchDetailAddrFromCoords(coords, callback) {
+			// 좌표로 법정동 상세 주소 정보를 요청합니다
+			geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+		}
+
+		
+		// 내위치 버튼 클릭 시
+		function btn_my_gps_click(){
+			if( navigator.geolocation )
+			{
+				navigator.geolocation.getCurrentPosition(function(position){
+					var lat = position.coords.latitude,  // 위도
+						lon = position.coords.longitude; // 경도
+					var locPosition = new kakao.maps.LatLng(lat, lon);
+					marker.setPosition(locPosition);
+					marker.setMap(map);
+					map.setCenter(locPosition) // 위치 이동
+				});
+			}
+			else{
+				aler("내위치를 확인할 수 없습니다");
+			}
+		}
 
 		// 로그 테스트
 		function getInfo() {
@@ -81,25 +117,6 @@
 			// ex) console.log(message);
 			console.log(message);
 		}
-
-		// 내위치 버튼 클릭 시
-		function btn_my_gps_click(){
-			if( navigator.geolocation )
-			{
-				navigator.geolocation.getCurrentPosition(function(position){
-					var lat = position.coords.latitude,  // 위도
-						lon = position.coords.longitude; // 경도
-					var locPosition = new kakao.maps.LatLng(lat, lon);
-					marker.setPosition(locPosition);
-					marker.setMap(map);
-					map.setCenter(locPosition) // 위치 이동
-				});
-			}
-			else{
-				aler("내위치를 확인할 수 없습니다");
-			}
-		}
 	</script>
-	<input type="button" onclick="btn_my_gps_click()" value="내위치" />
     </body>
 </html>
