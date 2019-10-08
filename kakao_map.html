@@ -5,6 +5,7 @@
 		<title>Kakao 지도 테스트</title>
 	    <style>
 		body { font-family: -apple-system, Helvetica; sans-serif; }
+		.title {font-weight:bold;display:block;}
 		.bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 		</style>
 	</head>
@@ -53,6 +54,7 @@
 				    var content = '<div class="bAddr">' +
 								  '<span class="title">법정동 주소정보</span>' + 
 		                            detailAddr + 
+									'<input type="button" onclick="btn_my_gps_click()" value="내위치" />' +
 					              '</div>';
 					
 					// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
