@@ -17,6 +17,34 @@
 
 		var map = new kakao.maps.Map(container, options);
 
+		// 지도 확대/축소 컨트롤 표시
+		var zoomControl = new kakao.maps.ZoomControl();
+		map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
+
+		// 마커
+		var marker = new kakao.maps.Marker({
+			
+		});
+
+		// 지도에 클릭 이벤트를 등록합니다
+		// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+			
+			// 클릭한 위도, 경도 정보를 가져옵니다 
+			var latlng = mouseEvent.latLng;
+
+			marker.setPosition(latlng);
+			marker.setMap(map);
+			
+			var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+			message += '경도는 ' + latlng.getLng() + ' 입니다';
+			
+			var resultDiv = document.getElementById('result'); 
+			resultDiv.innerHTML = message;
+
+		});
+
+
 		function getInfo() {
 			// 지도의 현재 중심좌표를 얻어옵니다 
 			var center = map.getCenter(); 
