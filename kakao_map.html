@@ -90,7 +90,7 @@
 					var lat = position.coords.latitude,  // 위도
 						lon = position.coords.longitude; // 경도
 					var locPosition = new kakao.maps.LatLng(lat, lon);
-					marker.setPosition(latlng);
+					marker.setPosition(locPosition);
 					marker.setMap(map);
 					map.setCenter(locPostion) // 위치 이동
 				});
