@@ -99,12 +99,12 @@
 			// 도로명주소 복사
 			function btn_copy_road_address(){
 				copyToClipboard(m_road_addr);
-				notify_alert("알림", "도로명주소 복사되었습니다.");
+				notify_alert("알림", "도로명주소 "+ m_road_addr +"이(가) 복사되었습니다.");
 			}
 			// 지번주소 복사
 			function btn_copy_address(){
 				copyToClipboard(m_addr);
-				notify_alert("알림", "지번주소 복사되었습니다.");
+				notify_alert("알림", "지번주소 "+ m_addr +"이(가) 복사되었습니다.");
 			}
 
 			// ---------- Function ----------
@@ -123,8 +123,10 @@
 						if (valid_road_address) {
 							content += '<input type="button" onclick="btn_copy_road_address()" value="도로명주소 복사" />';
 							m_road_addr = result[0].road_address.address_name;
-							m_addr = result[0].address.address_name;
+						}else{
+							m_road_addr = "";
 						}
+						m_addr = result[0].address.address_name;
 						content += '<input type="button" onclick="btn_copy_address()" value="지번주소 복사" />';
 						
 						// content += '<input type="button" onclick="btn_my_gps_click()" value="내위치" />';
