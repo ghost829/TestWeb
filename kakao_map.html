@@ -19,183 +19,187 @@
 		<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8c0dbdd57a9cf19e4f4da0d2213ae714&libraries=services"></script>
 	</head>
 	<body>
-	<div id="map" style="width:100%;height:65%;"></div>
-	<input type="button" onclick="btn_my_gps_click()" value="내위치" />
-	<script>
-		// ---------- Init ----------
-		var container = document.getElementById('map');
-		var options = {
-			center: new kakao.maps.LatLng(33.450701, 126.570667),
-			level: 3
-		};
-		// 지도를 생성합니다
-		var map = new kakao.maps.Map(container, options);
-		// 주소-좌표 변환 객체를 생성합니다
-		var geocoder = new kakao.maps.services.Geocoder();
-		// 지도 확대/축소 컨트롤 표시
-		var zoomControl = new kakao.maps.ZoomControl();
-		map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
+		<div id="map" style="width:100%;height:65%;"></div>
+		<input type="button" onclick="btn_my_gps_click()" value="내위치" />
+		<script>
+			// ---------- Init ----------
+			var container = document.getElementById('map');
+			var options = {
+				center: new kakao.maps.LatLng(33.450701, 126.570667),
+				level: 3
+			};
+			// 지도를 생성합니다
+			var map = new kakao.maps.Map(container, options);
+			// 주소-좌표 변환 객체를 생성합니다
+			var geocoder = new kakao.maps.services.Geocoder();
+			// 지도 확대/축소 컨트롤 표시
+			var zoomControl = new kakao.maps.ZoomControl();
+			map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
 
-		// 마커
-		var m_marker = new kakao.maps.Marker(),
-		// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-		infowindow = new kakao.maps.InfoWindow({
-			zindex:1
-			,removable : true
-		}); 
-		var selectedMarker = null; // 클릭한 마커를 담을 변수
+			// 마커
+			var m_marker = new kakao.maps.Marker(),
+			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+			infowindow = new kakao.maps.InfoWindow({
+				zindex:1
+				,removable : true
+			}); 
 
-		// 지도에 오른쪽클릭 이벤트를 등록합니다
-		// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-		// rightclick == [Mobile]LongPress
-		kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {        
-			// 클릭한 위도, 경도 정보를 가져옵니다 
-			var latlng = mouseEvent.latLng;
-			
-			var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-			message += '경도는 ' + latlng.getLng() + ' 입니다';
-			console.log(message);
+			var m_road_addr = ""; // 도로명주소
+			var m_addr = ""; // 지번주소
 
-			m_marker.setPosition(latlng);
-			m_marker.setMap(map);
-			showInfoWindow(m_marker);
-		});
+			// 지도에 오른쪽클릭 이벤트를 등록합니다
+			// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+			// rightclick == [Mobile]LongPress
+			kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {        
+				// 클릭한 위도, 경도 정보를 가져옵니다 
+				var latlng = mouseEvent.latLng;
+				
+				var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+				message += '경도는 ' + latlng.getLng() + ' 입니다';
+				console.log(message);
 
-		// 마커에 click 이벤트를 등록합니다
-	    kakao.maps.event.addListener(m_marker, 'click', function() {
-			if( infowindow.getMap() == null ) {
+				m_marker.setPosition(latlng);
+				m_marker.setMap(map);
 				showInfoWindow(m_marker);
-			}
-			else{
-				infowindow.close();
-			}
-	    });
+			});
 
-		
-		// ---------- Event ----------
-		// 내위치 버튼 클릭 시
-		function btn_my_gps_click(){
-			if( navigator.geolocation )
-			{
-				navigator.geolocation.getCurrentPosition(function(position){
-					var lat = position.coords.latitude,  // 위도
-						lon = position.coords.longitude; // 경도
-					var locPosition = new kakao.maps.LatLng(lat, lon);
-					m_marker.setPosition(locPosition);
-					m_marker.setMap(map);
-					map.setCenter(locPosition) // 위치 이동
-					showInfoWindow(m_marker); // 인포윈도우 표시
-					
-					notify_alert("알림", "내위치로 이동되었습니다.");
-				});
-			}
-			else{
-				aler("내위치를 확인할 수 없습니다");
-			}
-		}
-
-		// 도로명주소 복사
-		function btn_copy_road_address(addr){
-			notify_alert("알림", "도로명주소 복사되었습니다.");
-		}
-		// 지번주소 복사
-		function btn_copy_address(addr){
-			notify_alert("알림", "지번주소 복사되었습니다.");
-		}
-
-		// ---------- Function ----------
-		// 인포 윈도우 표시
-		function showInfoWindow(marker){
-			var latlng = marker.getPosition();
-			searchDetailAddrFromCoords(latlng, function(result, status) {
-				if (status === kakao.maps.services.Status.OK) {
-					var valid_road_address = !!result[0].road_address;
-					var detailAddr = valid_road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
-		            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-            
-				    var content = '<div class="bAddr">' +
-								  '<span class="title">법정동 주소정보</span>' + 
-		                            detailAddr;
-					if (valid_road_address) {
-						content += '<input type="button" onclick="btn_my_gps_click()" value="도로명주소 복사" />
-					} else {
-						content += '<input type="button" onclick="btn_my_gps_click()" value="지번주소 복사" />
-					}
-					// content += '<input type="button" onclick="btn_my_gps_click()" value="내위치" />';
-					content += '</div>';
-					
-					// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-					infowindow.setContent(content);
-					infowindow.open(map, marker);
+			// 마커에 click 이벤트를 등록합니다
+			kakao.maps.event.addListener(m_marker, 'click', function() {
+				if( infowindow.getMap() == null ) {
+					showInfoWindow(m_marker);
+				}
+				else{
+					infowindow.close();
 				}
 			});
-		}
 
-		function searchDetailAddrFromCoords(coords, callback) {
-			// 좌표로 법정동 상세 주소 정보를 요청합니다
-			geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-		}
+			
+			// ---------- Event ----------
+			// 내위치 버튼 클릭 시
+			function btn_my_gps_click(){
+				if( navigator.geolocation )
+				{
+					navigator.geolocation.getCurrentPosition(function(position){
+						var lat = position.coords.latitude,  // 위도
+							lon = position.coords.longitude; // 경도
+						var locPosition = new kakao.maps.LatLng(lat, lon);
+						m_marker.setPosition(locPosition);
+						m_marker.setMap(map);
+						map.setCenter(locPosition) // 위치 이동
+						showInfoWindow(m_marker); // 인포윈도우 표시
+						
+						notify_alert("알림", "내위치로 이동되었습니다.");
+					});
+				}
+				else{
+					aler("내위치를 확인할 수 없습니다");
+				}
+			}
 
-		function notify_alert(title, msg){
-			notify({
-				type: "alert", //alert | success | error | warning | info
-				title: title,
-				message: msg,
-				position: {
-					x: "right", //right | left | center
-					y: "top" //top | bottom | center
-				},
-				icon: '<img src="img/paper_plane.png" />', //<i>
-				size: "normal", //normal | full | small
-				overlay: false, //true | false
-				closeBtn: true, //true | false
-				overflowHide: false, //true | false
-				spacing: 20, //number px
-				theme: "default", //default | dark-theme
-				autoHide: true, //true | false
-				delay: 2500, //number ms
-				onShow: null, //function
-				onClick: null, //function
-				onHide: null, //function
-				template: '<div class="notify"><div class="notify-text"></div></div>'
-			});
-		}
+			// 도로명주소 복사
+			function btn_copy_road_address(){
+				notify_alert("알림", "도로명주소 복사되었습니다.");
+			}
+			// 지번주소 복사
+			function btn_copy_address(){
+				notify_alert("알림", "지번주소 복사되었습니다.");
+			}
 
-		// 로그 테스트
-		function getInfo() {
-			// 지도의 현재 중심좌표를 얻어옵니다 
-			var center = map.getCenter(); 
-			
-			// 지도의 현재 레벨을 얻어옵니다
-			var level = map.getLevel();
-			
-			// 지도타입을 얻어옵니다
-			var mapTypeId = map.getMapTypeId(); 
-			
-			// 지도의 현재 영역을 얻어옵니다 
-			var bounds = map.getBounds();
-			
-			// 영역의 남서쪽 좌표를 얻어옵니다 
-			var swLatLng = bounds.getSouthWest(); 
-			
-			// 영역의 북동쪽 좌표를 얻어옵니다 
-			var neLatLng = bounds.getNorthEast(); 
-			
-			// 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
-			var boundsStr = bounds.toString();
-			
-			
-			var message = '지도 중심좌표는 위도 ' + center.getLat() + ', <br>';
-			message += '경도 ' + center.getLng() + ' 이고 <br>';
-			message += '지도 레벨은 ' + level + ' 입니다 <br> <br>';
-			message += '지도 타입은 ' + mapTypeId + ' 이고 <br> ';
-			message += '지도의 남서쪽 좌표는 ' + swLatLng.getLat() + ', ' + swLatLng.getLng() + ' 이고 <br>';
-			message += '북동쪽 좌표는 ' + neLatLng.getLat() + ', ' + neLatLng.getLng() + ' 입니다';
-			
-			// 개발자도구를 통해 직접 message 내용을 확인해 보세요.
-			// ex) console.log(message);
-			console.log(message);
-		}
-	</script>
+			// ---------- Function ----------
+			// 인포 윈도우 표시
+			function showInfoWindow(marker){
+				var latlng = marker.getPosition();
+				searchDetailAddrFromCoords(latlng, function(result, status) {
+					if (status === kakao.maps.services.Status.OK) {
+						var valid_road_address = !!result[0].road_address;
+						var detailAddr = valid_road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+						detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
+				
+						var content = '<div class="bAddr">' +
+									  '<span class="title">법정동 주소정보</span>' + 
+										detailAddr;
+						if (valid_road_address) {
+							content += '<input type="button" onclick="btn_copy_road_address()" value="도로명주소 복사" />';
+							m_road_addr = result[0].road_address.address_name;
+							m_addr = result[0].address.address_name;
+						}
+						content += '<input type="button" onclick="btn_copy_address()" value="지번주소 복사" />';
+						
+						// content += '<input type="button" onclick="btn_my_gps_click()" value="내위치" />';
+						content += '</div>';
+						
+						// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+						infowindow.setContent(content);
+						infowindow.open(map, marker);
+					}
+				});
+			}
+
+			function searchDetailAddrFromCoords(coords, callback) {
+				// 좌표로 법정동 상세 주소 정보를 요청합니다
+				geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+			}
+
+			function notify_alert(title, msg){
+				notify({
+					type: "alert", //alert | success | error | warning | info
+					title: title,
+					message: msg,
+					position: {
+						x: "right", //right | left | center
+						y: "top" //top | bottom | center
+					},
+					icon: '<img src="img/paper_plane.png" />', //<i>
+					size: "normal", //normal | full | small
+					overlay: false, //true | false
+					closeBtn: true, //true | false
+					overflowHide: false, //true | false
+					spacing: 20, //number px
+					theme: "default", //default | dark-theme
+					autoHide: true, //true | false
+					delay: 2500, //number ms
+					onShow: null, //function
+					onClick: null, //function
+					onHide: null, //function
+					template: '<div class="notify"><div class="notify-text"></div></div>'
+				});
+			}
+
+			// 로그 테스트
+			function getInfo() {
+				// 지도의 현재 중심좌표를 얻어옵니다 
+				var center = map.getCenter(); 
+				
+				// 지도의 현재 레벨을 얻어옵니다
+				var level = map.getLevel();
+				
+				// 지도타입을 얻어옵니다
+				var mapTypeId = map.getMapTypeId(); 
+				
+				// 지도의 현재 영역을 얻어옵니다 
+				var bounds = map.getBounds();
+				
+				// 영역의 남서쪽 좌표를 얻어옵니다 
+				var swLatLng = bounds.getSouthWest(); 
+				
+				// 영역의 북동쪽 좌표를 얻어옵니다 
+				var neLatLng = bounds.getNorthEast(); 
+				
+				// 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
+				var boundsStr = bounds.toString();
+				
+				
+				var message = '지도 중심좌표는 위도 ' + center.getLat() + ', <br>';
+				message += '경도 ' + center.getLng() + ' 이고 <br>';
+				message += '지도 레벨은 ' + level + ' 입니다 <br> <br>';
+				message += '지도 타입은 ' + mapTypeId + ' 이고 <br> ';
+				message += '지도의 남서쪽 좌표는 ' + swLatLng.getLat() + ', ' + swLatLng.getLng() + ' 이고 <br>';
+				message += '북동쪽 좌표는 ' + neLatLng.getLat() + ', ' + neLatLng.getLng() + ' 입니다';
+				
+				// 개발자도구를 통해 직접 message 내용을 확인해 보세요.
+				// ex) console.log(message);
+				console.log(message);
+			}
+		</script>
     </body>
 </html>
