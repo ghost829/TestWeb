@@ -126,12 +126,14 @@
 						m_addr = result[0].address.address_name;
 
 						// 키워드로 장소를 검색합니다
-						ps.keywordSearch(m_addr, function(data, status, pagination){
-							// 총개수 로그
-							console.log(pagination.totalCount);
-							// 장소명 로그
-							for(var i=0; i < data.length; i++){
-								console.log(data[i].place_name);
+						ps.keywordSearch(m_addr, function(places, status, pagination){
+							if (status === kakao.maps.services.Status.OK) {
+								// 총개수 로그
+								console.log(pagination.totalCount);
+								// 장소명 로그
+								for(var i=0; i < places.length; i++){
+									console.log(places[i].place_name, places[i].place_url);
+								}
 							}
 						}); 
 
