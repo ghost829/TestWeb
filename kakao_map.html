@@ -55,7 +55,12 @@
 
 		// 마커에 click 이벤트를 등록합니다
 	    kakao.maps.event.addListener(m_marker, 'click', function() {
-			showInfoWindow(m_marker);
+			if( infowindow.getMap() == null ) {
+				showInfoWindow(m_marker);
+			}
+			else{
+				infowindow.close();
+			}
 	    });
 
 		
