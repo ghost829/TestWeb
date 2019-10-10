@@ -20,7 +20,7 @@
 	</head>
 	<body>
 		<div id="map" style="width:100%;height:65%;"></div>
-		<input type="button" onclick="btn_my_gps_click()" value="내위치" />
+		<input type="button" onclick="btn_my_gps_click()" value="내위치로 이동" />
 		<script>
 			// ---------- Init ----------
 			var container = document.getElementById('map');
@@ -35,6 +35,8 @@
 			// 지도 확대/축소 컨트롤 표시
 			var zoomControl = new kakao.maps.ZoomControl();
 			map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
+			// 장소 검색 객체를 생성합니다
+			var ps = new kakao.maps.services.Places(); 
 
 			// 마커
 			var m_marker = new kakao.maps.Marker(),
@@ -73,6 +75,11 @@
 				}
 			});
 
+			// 화면 load시 내 위치로 이동
+			$(document).ready(function() {
+				btn_my_gps_click();
+			});
+
 			
 			// ---------- Event ----------
 			// 내위치 버튼 클릭 시
@@ -99,12 +106,12 @@
 			// 도로명주소 복사
 			function btn_copy_road_address(){
 				copyToClipboard(m_road_addr);
-				notify_alert("알림", "도로명주소 "+ m_road_addr +"이(가) 복사되었습니다.");
+				notify_alert("알림", "도로명주소 \""+ m_road_addr +"\" 복사되었습니다.");
 			}
 			// 지번주소 복사
 			function btn_copy_address(){
 				copyToClipboard(m_addr);
-				notify_alert("알림", "지번주소 "+ m_addr +"이(가) 복사되었습니다.");
+				notify_alert("알림", "지번주소 \""+ m_addr +"\" 복사되었습니다.");
 			}
 
 			// ---------- Function ----------
@@ -144,9 +151,8 @@
 				geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
 			}
 
-			// 클립보드로 값 복사
+			// 클립보드로 값 복사(ref: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f)
 			function copyToClipboard(str){
-			//const copyToClipboard = str => {
 			  var el = document.createElement('textarea');
 			  el.value = str;
 			  el.setAttribute('readonly', '');
