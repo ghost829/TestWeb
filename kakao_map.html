@@ -50,14 +50,12 @@
 
 			m_marker.setPosition(latlng);
 			m_marker.setMap(map);
-			showInfoWindow(m_marker, latlng);
+			showInfoWindow(m_marker);
 		});
 
 		// 마커에 click 이벤트를 등록합니다
-	    kakao.maps.event.addListener(m_marker, 'click', function(mouseEvent) {
-			// 클릭한 위도, 경도 정보를 가져옵니다 
-			var latlng = mouseEvent.latLng;
-			showInfoWindow(m_marker, latlng);
+	    kakao.maps.event.addListener(m_marker, 'click', function() {
+			showInfoWindow(m_marker);
 	    });
 
 		
@@ -73,7 +71,7 @@
 					m_marker.setPosition(locPosition);
 					m_marker.setMap(map);
 					map.setCenter(locPosition) // 위치 이동
-					showInfoWindow(m_marker, latlng); // 인포윈도우 표시
+					showInfoWindow(m_marker); // 인포윈도우 표시
 				});
 			}
 			else{
@@ -83,7 +81,8 @@
 
 		// ---------- Function ----------
 		// 인포 윈도우 표시
-		function showInfoWindow(marker, latlng){
+		function showInfoWindow(marker){
+			var latlng = marker.getPosition;
 			searchDetailAddrFromCoords(latlng, function(result, status) {
 				if (status === kakao.maps.services.Status.OK) {
 					var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
