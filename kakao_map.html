@@ -98,10 +98,12 @@
 
 			// 도로명주소 복사
 			function btn_copy_road_address(){
+				copyToClipboard(m_road_addr);
 				notify_alert("알림", "도로명주소 복사되었습니다.");
 			}
 			// 지번주소 복사
 			function btn_copy_address(){
+				copyToClipboard(m_addr);
 				notify_alert("알림", "지번주소 복사되었습니다.");
 			}
 
@@ -140,6 +142,21 @@
 				geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
 			}
 
+			// 클립보드로 값 복사
+			function copyToClipboard(str){
+			//const copyToClipboard = str => {
+			  var el = document.createElement('textarea');
+			  el.value = str;
+			  el.setAttribute('readonly', '');
+			  el.style.position = 'absolute';
+			  el.style.left = '-9999px';
+			  document.body.appendChild(el);
+			  el.select();
+			  document.execCommand('copy');
+			  document.body.removeChild(el);
+			};
+
+			// 알림 출력
 			function notify_alert(title, msg){
 				notify({
 					type: "alert", //alert | success | error | warning | info
