@@ -85,34 +85,22 @@
 					m_marker.setMap(map);
 					map.setCenter(locPosition) // 위치 이동
 					showInfoWindow(m_marker); // 인포윈도우 표시
-
-					notify({
-						type: "alert", //alert | success | error | warning | info
-						title: "Alert",
-						message: "jQuery Notify.js Demo. Super simple Notify plugin.",
-						position: {
-							x: "right", //right | left | center
-							y: "top" //top | bottom | center
-						},
-						icon: '<img src="img/paper_plane.png" />', //<i>
-						size: "normal", //normal | full | small
-						overlay: false, //true | false
-						closeBtn: true, //true | false
-						overflowHide: false, //true | false
-						spacing: 20, //number px
-						theme: "default", //default | dark-theme
-						autoHide: true, //true | false
-						delay: 2500, //number ms
-						onShow: null, //function
-						onClick: null, //function
-						onHide: null, //function
-						template: '<div class="notify"><div class="notify-text"></div></div>'
-					});
+					
+					notify_alert("알림", "내위치로 이동되었습니다.");
 				});
 			}
 			else{
 				aler("내위치를 확인할 수 없습니다");
 			}
+		}
+
+		// 도로명주소 복사
+		function btn_copy_road_address(addr){
+			notify_alert("알림", "도로명주소 복사되었습니다.");
+		}
+		// 지번주소 복사
+		function btn_copy_address(addr){
+			notify_alert("알림", "지번주소 복사되었습니다.");
 		}
 
 		// ---------- Function ----------
@@ -121,14 +109,20 @@
 			var latlng = marker.getPosition();
 			searchDetailAddrFromCoords(latlng, function(result, status) {
 				if (status === kakao.maps.services.Status.OK) {
-					var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
+					var valid_road_address = !!result[0].road_address;
+					var detailAddr = valid_road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
 		            detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
             
 				    var content = '<div class="bAddr">' +
 								  '<span class="title">법정동 주소정보</span>' + 
-		                            detailAddr + 
-									'<input type="button" onclick="btn_my_gps_click()" value="내위치" />' +
-					              '</div>';
+		                            detailAddr;
+					if (valid_road_address) {
+						content += '<input type="button" onclick="btn_my_gps_click()" value="도로명주소 복사" />
+					} else {
+						content += '<input type="button" onclick="btn_my_gps_click()" value="지번주소 복사" />
+					}
+					// content += '<input type="button" onclick="btn_my_gps_click()" value="내위치" />';
+					content += '</div>';
 					
 					// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
 					infowindow.setContent(content);
@@ -140,6 +134,31 @@
 		function searchDetailAddrFromCoords(coords, callback) {
 			// 좌표로 법정동 상세 주소 정보를 요청합니다
 			geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+		}
+
+		function notify_alert(title, msg){
+			notify({
+				type: "alert", //alert | success | error | warning | info
+				title: title,
+				message: msg,
+				position: {
+					x: "right", //right | left | center
+					y: "top" //top | bottom | center
+				},
+				icon: '<img src="img/paper_plane.png" />', //<i>
+				size: "normal", //normal | full | small
+				overlay: false, //true | false
+				closeBtn: true, //true | false
+				overflowHide: false, //true | false
+				spacing: 20, //number px
+				theme: "default", //default | dark-theme
+				autoHide: true, //true | false
+				delay: 2500, //number ms
+				onShow: null, //function
+				onClick: null, //function
+				onHide: null, //function
+				template: '<div class="notify"><div class="notify-text"></div></div>'
+			});
 		}
 
 		// 로그 테스트
