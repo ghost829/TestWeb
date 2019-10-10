@@ -23,13 +23,19 @@
 		<input type="button" onclick="btn_my_gps_click()" value="내위치로 이동" />
 		<script>
 			// ---------- Init ----------
-			var container = document.getElementById('map');
-			var options = {
-				center: new kakao.maps.LatLng(33.450701, 126.570667),
-				level: 3
-			};
+			//var container = document.getElementById('map');
+			//var options = {
+			//	center: new kakao.maps.LatLng(33.450701, 126.570667),
+			//	level: 3
+			//};
 			// 지도를 생성합니다
-			var map = new kakao.maps.Map(container, options);
+			var map = new kakao.maps.Map( //container, options
+				document.getElementById('map'),
+				{
+					center: new kakao.maps.LatLng(33.450701, 126.570667),
+					level: 3
+				}
+			);
 			// 주소-좌표 변환 객체를 생성합니다
 			var geocoder = new kakao.maps.services.Geocoder();
 			// 지도 확대/축소 컨트롤 표시
@@ -99,7 +105,7 @@
 					});
 				}
 				else{
-					aler("내위치를 확인할 수 없습니다");
+					alert("내위치를 확인할 수 없습니다");
 				}
 			}
 
@@ -151,17 +157,32 @@
 				geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
 			}
 
-			// 클립보드로 값 복사(ref: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f)
+			// 클립보드로 값 복사
+			// (ref1: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f)
+			// (ref2: https://stackoverflow.com/questions/32851485/make-clipboard-copy-paste-work-on-iphone-devices/43001673#43001673);
 			function copyToClipboard(str){
-			  var el = document.createElement('textarea');
-			  el.value = str;
-			  el.setAttribute('readonly', '');
-			  el.style.position = 'absolute';
-			  el.style.left = '-9999px';
-			  document.body.appendChild(el);
-			  el.select();
-			  document.execCommand('copy');
-			  document.body.removeChild(el);
+				var el = document.createElement('textarea');
+				el.value = str;
+				el.setAttribute('readonly', '');
+				el.style.position = 'absolute';
+				el.style.left = '-9999px';
+				document.body.appendChild(el);
+				var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
+				if (isiOSDevice) {
+					var range = document.createRange();
+					range.selectNodeContents(el);
+
+					var selection = window.getSelection();
+					selection.removeAllRanges();
+					selection.addRange(range);
+
+					el.setSelectionRange(0, 999999);
+				}
+				else{
+					el.select();
+				}
+				document.execCommand('copy');
+				document.body.removeChild(el);
 			};
 
 			// 알림 출력
