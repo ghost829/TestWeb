@@ -56,7 +56,7 @@
 					<div>
 						<form onsubmit="searchPlaces(); return false;">
 							키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
-							<button type="submit">검색하기</button> 
+							<input type="button" onclick="btn_search_addr()">검색하기</button> 
 						</form>
 					</div>
 				</div>
@@ -149,6 +149,12 @@
 				}
 			}
 
+			// 좌측상단 키워드 검색 시
+			function btn_search_addr(){
+				var str_serach_val = $("#keyword").value;
+				log(str_serach_val);
+			}
+
 			// 도로명주소 복사
 			function btn_copy_road_address(){
 				copyToClipboard(m_road_addr);
@@ -208,13 +214,12 @@
 			// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
 			function placesSearchCB(data, status, pagination) {
 
+				// 검색 목록 표출
 				displayPlaces(data);
 
 				if (status === kakao.maps.services.Status.OK) {
 
-					// 정상적으로 검색이 완료됐으면
-					// 검색 목록과 마커를 표출합니다
-					// displayPlaces(data);
+					// 정상적으로 검색 완료
 
 					// 페이지 번호를 표출합니다
 					//displayPagination(pagination);
