@@ -150,7 +150,8 @@
 			// 좌측상단 키워드 검색 시
 			function btn_search_addr(){
 				var str_serach_val = $("#keyword").val();
-				log(str_serach_val);
+				log("검색 - " + str_serach_val);
+				ps.keywordSearch(str_serach_val, placesSearchCB);
 			}
 
 			// 도로명주소 복사
