@@ -54,7 +54,7 @@
 			<div id="menu_wrap" class="bg_white">
 				<div class="option">
 					<div>
-						키워드 :<input type="text" value="이태원 맛집" id="keyword" size="15" />
+						키워드 :<input type="text" value="" id="keyword" size="15" />
 						<input type="button" onclick="btn_search_addr()" value="검색하기" />
 					</div>
 				</div>
@@ -108,7 +108,9 @@
 
 				m_marker.setPosition(latlng);
 				m_marker.setMap(map);
-				showInfoWindow(m_marker);
+				showInfoWindow(m_marker, function(addr){
+					$("#keyword").val(addr);
+				});
 			});
 
 			// 마커에 click 이벤트를 등록합니다
@@ -139,7 +141,10 @@
 						m_marker.setPosition(locPosition);
 						m_marker.setMap(map);
 						map.setCenter(locPosition) // 위치 이동
-						showInfoWindow(m_marker); // 인포윈도우 표시
+						// 인포윈도우 표시
+						showInfoWindow(m_marker, function(addr){
+							$("#keyword").val(addr);
+						});
 						
 						notify_alert("알림", "내위치로 이동되었습니다.");
 					});
@@ -169,7 +174,7 @@
 
 			// ---------- Function ----------
 			// 인포 윈도우 표시
-			function showInfoWindow(marker){
+			function showInfoWindow(marker, completion){
 				var latlng = marker.getPosition();
 				// 좌표로 법정동 상세 주소 정보를 요청합니다
 				m_geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
@@ -177,6 +182,10 @@
 						var valid_road_address = !!result[0].road_address;
 						m_road_addr = valid_road_address ? result[0].road_address.address_name : "";
 						m_addr = result[0].address.address_name;
+						if (completion)
+						{
+							completion(m_addr);
+						}
 
 						// 키워드로 장소를 검색합니다
 						ps.keywordSearch(m_addr, placesSearchCB);
@@ -250,7 +259,7 @@
 				removeAllChildNods(listEl);
 
 				// 지도에 표시되고 있는 마커를 제거합니다
-				removeMarker();
+				removeMarkers();
 				
 				for ( var i=0; i<places.length; i++ ) {
 
