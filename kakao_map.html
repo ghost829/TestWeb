@@ -84,6 +84,8 @@
 			var ps = new kakao.maps.services.Places(); 
 			// 마커
 			var m_marker = new kakao.maps.Marker();
+			// 마커를 담을 배열입니다
+			var m_markers = [];
 			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 			var infowindow = new kakao.maps.InfoWindow({
 				zindex:1
@@ -217,9 +219,9 @@
 				displayPlaces(data);
 
 				if (status === kakao.maps.services.Status.OK) {
-
 					// 정상적으로 검색 완료
-
+					log('검색 결과 있음');
+					
 					// 페이지 번호를 표출합니다
 					//displayPagination(pagination);
 
@@ -248,13 +250,13 @@
 				removeAllChildNods(listEl);
 
 				// 지도에 표시되고 있는 마커를 제거합니다
-				//removeMarker();
+				removeMarker();
 				
 				for ( var i=0; i<places.length; i++ ) {
 
 					// 마커를 생성하고 지도에 표시합니다
-					//var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-					// marker = addMarker(placePosition, i), 
+					var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x)
+					var marker = addMarker(placePosition, i)
 					var itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
 
 					// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -276,6 +278,7 @@
 						itemEl.onmouseover =  function () {
 							log("onmouseover");
 							//displayInfowindow(marker, title);
+							showInfoWindow(marker);
 						};
 
 						itemEl.onmouseout =  function () {
@@ -324,6 +327,34 @@
 				return el;
 			}
 
+			// 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+			function addMarker(position, idx, title) {
+				var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+					imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+					imgOptions =  {
+						spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+						spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+						offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+					},
+					markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+						marker = new kakao.maps.Marker({
+						position: position, // 마커의 위치
+						image: markerImage 
+					});
+
+				marker.setMap(map); // 지도 위에 마커를 표출합니다
+				markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+
+				return marker;
+			}
+			
+			// 지도 위에 표시되고 있는 마커를 모두 제거합니다
+			function removeMarkers() {
+				for ( var i = 0; i < m_markers.length; i++ ) {
+					m_markers[i].setMap(null);
+				}   
+				m_markers = [];
+			}
 
 			// ---------- Util ----------
 
