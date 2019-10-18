@@ -328,6 +328,10 @@
 						};
 					})(marker, places[i]);
 
+					kakao.maps.event.addListener(marker, 'click', function() {
+						showInfoWindow2(marker, place);
+					});
+
 					fragment.appendChild(itemEl);
 				}
 
