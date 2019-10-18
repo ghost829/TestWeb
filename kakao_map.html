@@ -190,8 +190,11 @@
 
 						var arr_places = [];
 						ps.keywordSearch(addr, function(places, status, pagination){
-							// 검색 목록 표출
-							arr_places.push(places);
+							
+							for ( var i=0; i<places.length; i++ ) {
+								arr_places.push(places[i]);
+							}
+							
 							//displayPlaces(places);
 
 							log("페이지 조회: "+ pagination.current +"/"+ pagination.last);
@@ -215,9 +218,11 @@
 								log('검색 결과가 존재하지 않습니다.');
 							}
 
+							// 조회할 페이지가 더 존재하면 조회
 							if( pagination.current < pagination.last ){
 								pagination.nextPage();
 							}else{
+								// 검색 목록 표출
 								displayPlaces(arr_places);
 							}
 						});
