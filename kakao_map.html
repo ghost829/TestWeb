@@ -312,6 +312,13 @@
 						//	infowindow.close();
 						//});
 						//var title = place.place_name;
+
+						// 마커클릭 시
+						kakao.maps.event.addListener(marker, 'click', function() {
+							showInfoWindow2(marker, place);
+						});
+
+						// 좌측 Elemenet 이벤트
 						itemEl.onclick = function () {
 							log("onclick");
 							showInfoWindow2(marker, place);
@@ -327,10 +334,6 @@
 							//infowindow.close();
 						};
 					})(marker, places[i]);
-
-					kakao.maps.event.addListener(marker, 'click', function() {
-						showInfoWindow2(marker, place);
-					});
 
 					fragment.appendChild(itemEl);
 				}
