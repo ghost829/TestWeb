@@ -209,9 +209,9 @@
 						content += '<div>지번 주소 : ' + m_addr + '</div>';
 
 						if (valid_road_address) { // 도로명 주소 존재 시
-							content += '<input type="button" onclick="btn_copy_road_address(\"'+m_road_addr+'\")" value="도로명주소 복사" />';
+							content += '<input type="button" onclick="btn_copy_road_address(\''+m_road_addr+'\')" value="도로명주소 복사" />';
 						}
-						content += '<input type="button" onclick="btn_copy_address(\"'+m_addr+'\")" value="지번주소 복사" />';
+						content += '<input type="button" onclick="btn_copy_address(\'' + m_addr + '\')" value="지번주소 복사" />';
 						content += '</div>';
 						log(content);
 						
@@ -235,9 +235,9 @@
 				content += '<div>지번 주소 : ' + place.address_name + '</div>';
 
 				if (valid_road_address) { // 도로명 주소 존재 시
-					content += '<input type="button" onclick="btn_copy_road_address(\"'+ place.road_address_name +'\")" value="도로명주소 복사" />';
+					content += '<input type="button" onclick="btn_copy_road_address(\''+ place.road_address_name +'\')" value="도로명주소 복사" />';
 				}
-				content += '<input type="button" onclick="btn_copy_address(\"'+ place.place_name +'\")" value="지번주소 복사" />';
+				content += '<input type="button" onclick="btn_copy_address(\''+ place.place_name +'\')" value="지번주소 복사" />';
 				if (!!place.place_url)
 				{
 					content += '<input type="button" onclick="window.open(\''+ place.place_url +'\', \'_blank\')" value="플레이스" />';
