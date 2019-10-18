@@ -135,7 +135,7 @@
 						var locPosition = new kakao.maps.LatLng(lat, lon);
 						m_marker.setPosition(locPosition);
 						m_marker.setMap(map);
-						map.setCenter(locPosition) // 위치 이동
+						map.setCenter(locPosition); // 위치 이동
 						// 인포윈도우 표시
 						showInfoWindow(m_marker, function(addr){
 							$("#keyword").val(addr);
@@ -341,9 +341,10 @@
 						});
 
 						// 좌측 Elemenet 이벤트
-						itemEl.onclick = function () {
+						itemEl.onclick = function (mouseEvent) {
 							log("onclick");
 							showInfoWindow2(marker, place);
+							map.setCenter(marker.getPosition()); // 위치 이동
 						};
 
 						itemEl.onmouseover = function () {
