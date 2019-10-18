@@ -63,7 +63,6 @@
 		<script src="jQueryNotify/js/jquery.notify.min.js"></script>
 		<!--kakaomap-->
 		<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8c0dbdd57a9cf19e4f4da0d2213ae714&libraries=services"></script>
-		-->
 	</head>
 	<body>
 		<div class="map_wrap">
@@ -262,6 +261,7 @@
 						log(content);
 						
 						// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+						m_overlay.setMap(null);
 						m_overlay.setPosition(marker.getPosition());
 						m_overlay.setContent(content);
 						m_overlay.setMap(map);
@@ -292,6 +292,7 @@
 				content += '</div>';
 				
 				// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+				m_overlay.setMap(null);
 				m_overlay.setPosition(marker.getPosition());
 				m_overlay.setContent(content);
 				m_overlay.setMap(map);
