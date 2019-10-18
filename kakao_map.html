@@ -6,7 +6,7 @@
 	    <style>
 			body { font-family: -apple-system, Helvetica; sans-serif; }
 			.title {font-weight:bold;display:block;}
-			.bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+			.bAddr {padding:15px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 
 			.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 			.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
@@ -87,10 +87,7 @@
 			// 마커를 담을 배열입니다
 			var m_markers = [];
 			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-			var infowindow = new kakao.maps.InfoWindow({
-				zindex:1
-				,removable : true
-			}); 
+			var infowindow = new kakao.maps.InfoWindow({ zindex:100, removable : true }); 
 
 			// ---------- Init ----------
 			// 지도에 오른쪽클릭 이벤트를 등록합니다
@@ -213,7 +210,6 @@
 
 							} else if (status === kakao.maps.services.Status.ZERO_RESULT) {
 								log('검색 결과가 존재하지 않습니다.');
-								//alert('검색 결과가 존재하지 않습니다.');
 							} else if (status === kakao.maps.services.Status.ERROR) {
 								log('검색 결과가 존재하지 않습니다.');
 							}
@@ -403,18 +399,31 @@
 
 			// 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
 			function addMarker(position, idx, title) {
-				var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
-					imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
-					imgOptions =  {
-						spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
-						spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-						offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-					},
-					markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-						marker = new kakao.maps.Marker({
-						position: position, // 마커의 위치
-						image: markerImage 
-					});
+			var imageSrc = 'http://i1.daumcdn.net/dmaps/apis/n_local_blit_04.png',
+				imageSize = new kakao.maps.Size(31, 35),  // 마커 이미지의 크기
+				imageOptions = {
+			        shape: 'poly',
+			        coords: '16,0,20,2,24,6,26,10,26,16,23,22,17,25,14,35,13,35,9,25,6,24,2,20,0,16,0,10,2,6,6,2,10,0'
+				},
+				markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+				marker = new kakao.maps.Marker({
+					position: position, // 마커의 위치
+					image: markerImage 
+				});
+
+
+				//var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+				//	imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+				//	imgOptions =  {
+				//		spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+				//		spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+				//		offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+				//	},
+				//	markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+				//		marker = new kakao.maps.Marker({
+				//		position: position, // 마커의 위치
+				//		image: markerImage 
+				//	});
 
 				marker.setMap(map); // 지도 위에 마커를 표출합니다
 				m_markers.push(marker);  // 배열에 생성된 마커를 추가합니다
