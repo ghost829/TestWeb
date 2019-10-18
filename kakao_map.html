@@ -95,11 +95,11 @@
 //			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 //			var infowindow = new kakao.maps.InfoWindow({ zindex:100, removable : true }); 
 			// 커스텀 오버레이를 생성합니다
-			var m_overlay = new kakao.maps.CustomOverlay({});
+			var m_overlay = new kakao.maps.CustomOverlay({
 				position: new kakao.maps.LatLng(33.450701, 126.570667),
-				yAnchor : 1
+				yAnchor: 1
 //				content: content   
-//			});
+			});
 
 			// ---------- Init ----------
 			// 지도에 오른쪽클릭 이벤트를 등록합니다
