@@ -6,7 +6,12 @@
 	    <style>
 			body { font-family: -apple-system, Helvetica; sans-serif; }
 			.title {font-weight:bold;display:block;}
-			.bAddr {padding:15px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+			/* .bAddr {padding:15px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;} */
+			.bAddr {margin-bottom: 96px;}
+			.bAddr * {display: inline-block;vertical-align: top;}
+			.bAddr .left {background: url("http://t1.daumcdn.net/localimg/localimages/07/2011/map/storeview/tip_l.png") no-repeat;display: inline-block;height: 24px;overflow: hidden;vertical-align: top;width: 7px;}
+			.bAddr .center {background: url("http://t1.daumcdn.net/localimg/localimages/07/2011/map/storeview/tip_bg.png") repeat-x;display: inline-block;height: 24px;font-size: 12px;line-height: 24px;}
+			.bAddr .right {background: url("http://t1.daumcdn.net/localimg/localimages/07/2011/map/storeview/tip_r.png") -1px 0  no-repeat;display: inline-block;height: 24px;overflow: hidden;width: 6px;}
 
 			.map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 			.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
