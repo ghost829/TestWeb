@@ -194,7 +194,7 @@
 							arr_places.push(places);
 							//displayPlaces(places);
 
-							log("페이지 조회: "+ pagingnation.current +"/"+ pagingnation.last);
+							log("페이지 조회: "+ pagination.current +"/"+ pagination.last);
 
 							if (status === kakao.maps.services.Status.OK) {
 								// 정상적으로 검색 완료
@@ -221,8 +221,8 @@
 								log('검색 결과가 존재하지 않습니다.');
 							}
 
-							if( pagingnation.current < pagingnation.last ){
-								pagingnation.nextPage();
+							if( pagination.current < pagination.last ){
+								pagination.nextPage();
 							}else{
 								displayPlaces(arr_places);
 							}
