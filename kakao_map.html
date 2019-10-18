@@ -162,12 +162,12 @@
 			}
 
 			// 도로명주소 복사
-			function btn_copy_road_address(){
+			function btn_copy_road_address(addr){
 				copyToClipboard(m_road_addr);
 				notify_alert("알림", "도로명주소 \""+ m_road_addr +"\" 복사되었습니다.");
 			}
 			// 지번주소 복사
-			function btn_copy_address(){
+			function btn_copy_address(addr){
 				copyToClipboard(m_addr);
 				notify_alert("알림", "지번주소 \""+ m_addr +"\" 복사되었습니다.");
 			}
@@ -209,16 +209,44 @@
 						content += '<div>지번 주소 : ' + m_addr + '</div>';
 
 						if (valid_road_address) { // 도로명 주소 존재 시
-							content += '<input type="button" onclick="btn_copy_road_address()" value="도로명주소 복사" />';
+							content += '<input type="button" onclick="btn_copy_road_address('+m_road_addr+')" value="도로명주소 복사" />';
 						}
-						content += '<input type="button" onclick="btn_copy_address()" value="지번주소 복사" />';
+						content += '<input type="button" onclick="btn_copy_address('+m_addr+')" value="지번주소 복사" />';
 						content += '</div>';
+						log(content);
 						
 						// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
 						infowindow.setContent(content);
 						infowindow.open(map, marker);
 					}
 				});
+			}
+			// 인포 윈도우 표시
+			function showInfoWindow2(marker, place, completion){
+				var latlng = marker.getPosition();
+				var valid_road_address = !!place.road_address_name;
+
+				// 인포윈도우 컨텐츠 설정
+				var content = '<div class="bAddr">' +
+							  '<span class="title">'+ place.place_name +'</span>';
+				if (valid_road_address) { // 도로명 주소 존재 시
+					content += '<div>도로명주소 : ' + place.road_address_name + '</div>';
+				}
+				content += '<div>지번 주소 : ' + place.address_name + '</div>';
+
+				if (valid_road_address) { // 도로명 주소 존재 시
+					content += '<input type="button" onclick="btn_copy_road_address('+ place.road_address_name +')" value="도로명주소 복사" />';
+				}
+				content += '<input type="button" onclick="btn_copy_address('+ place.place_name +')" value="지번주소 복사" />';
+				if (!!place.place_url)
+				{
+					content += '<input type="button" onclick="window.open(place.place_url, \'_blank\')" value="플레이스" />';
+				}
+				content += '</div>';
+				
+				// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+				infowindow.setContent(content);
+				infowindow.open(map, marker);
 			}
 
 			// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
@@ -275,7 +303,7 @@
 					// 마커와 검색결과 항목에 mouseover 했을때
 					// 해당 장소에 인포윈도우에 장소명을 표시합니다
 					// mouseout 했을 때는 인포윈도우를 닫습니다
-					(function(marker, title) {
+					(function(marker, place) {
 						//kakao.maps.event.addListener(marker, 'mouseover', function() {
 						//	displayInfowindow(marker, title);
 						//});
@@ -283,17 +311,22 @@
 						//kakao.maps.event.addListener(marker, 'mouseout', function() {
 						//	infowindow.close();
 						//});
+						//var title = place.place_name;
+						itemEl.onclick = function () {
+							log("onclick");
+							showInfoWindow2(marker, place);
+						};
 
-						itemEl.onmouseover =  function () {
+						itemEl.onmouseover = function () {
 							log("onmouseover");
-							showInfoWindow(marker);
+							showInfoWindow2(marker, place);
 						};
 
 						itemEl.onmouseout =  function () {
 							log("onmouseout");
 							//infowindow.close();
 						};
-					})(marker, places[i].place_name);
+					})(marker, places[i]);
 
 					fragment.appendChild(itemEl);
 				}
