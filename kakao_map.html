@@ -265,6 +265,7 @@
 						m_overlay.setPosition(marker.getPosition());
 						m_overlay.setContent(content);
 						m_overlay.setMap(map);
+						log("m_overlay.getZindex() = " + m_overlay.getZindex());
 					}
 				});
 			}
@@ -296,6 +297,7 @@
 				m_overlay.setPosition(marker.getPosition());
 				m_overlay.setContent(content);
 				m_overlay.setMap(map);
+				log("m_overlay.getZindex() = " + m_overlay.getZindex());
 			}
 
 			// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
