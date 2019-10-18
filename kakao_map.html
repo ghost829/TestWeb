@@ -91,8 +91,13 @@
 			var m_marker = new kakao.maps.Marker();
 			// 마커를 담을 배열입니다
 			var m_markers = [];
-			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-			var infowindow = new kakao.maps.InfoWindow({ zindex:100, removable : true }); 
+//			// 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+//			var infowindow = new kakao.maps.InfoWindow({ zindex:100, removable : true }); 
+			// 커스텀 오버레이를 생성합니다
+			var m_overlay = new kakao.maps.CustomOverlay({});
+				position: new kakao.maps.LatLng(33.450701, 126.570667)
+//				content: content   
+//			});
 
 			// ---------- Init ----------
 			// 지도에 오른쪽클릭 이벤트를 등록합니다
@@ -115,11 +120,11 @@
 
 			// 마커에 click 이벤트를 등록합니다
 			kakao.maps.event.addListener(m_marker, 'click', function() {
-				if( infowindow.getMap() == null ) {
+				if( m_overlay.getMap() == null ) {
 					showInfoWindow(m_marker);
 				}
 				else{
-					infowindow.close();
+					m_overlay.setMap(null);
 				}
 			});
 
@@ -244,8 +249,9 @@
 						log(content);
 						
 						// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-						infowindow.setContent(content);
-						infowindow.open(map, marker);
+						m_overlay.setPosition(marker.getPosition());
+						m_overlay.setContent(content);
+						m_overlay.setMap(map);
 					}
 				});
 			}
@@ -273,8 +279,9 @@
 				content += '</div>';
 				
 				// 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-				infowindow.setContent(content);
-				infowindow.open(map, marker);
+				m_overlay.setPosition(marker.getPosition());
+				m_overlay.setContent(content);
+				m_overlay.setMap(map);
 			}
 
 			// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
