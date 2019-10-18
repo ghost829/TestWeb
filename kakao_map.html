@@ -91,8 +91,6 @@
 				zindex:1
 				,removable : true
 			}); 
-			var m_road_addr = ""; // 도로명주소
-			var m_addr = ""; // 지번주소
 
 			// ---------- Init ----------
 			// 지도에 오른쪽클릭 이벤트를 등록합니다
@@ -163,13 +161,13 @@
 
 			// 도로명주소 복사
 			function btn_copy_road_address(addr){
-				copyToClipboard(m_road_addr);
-				notify_alert("알림", "도로명주소 \""+ m_road_addr +"\" 복사되었습니다.");
+				copyToClipboard(addr);
+				notify_alert("알림", "도로명주소 \""+ addr +"\" 복사되었습니다.");
 			}
 			// 지번주소 복사
 			function btn_copy_address(addr){
-				copyToClipboard(m_addr);
-				notify_alert("알림", "지번주소 \""+ m_addr +"\" 복사되었습니다.");
+				copyToClipboard(addr);
+				notify_alert("알림", "지번주소 \""+ addr +"\" 복사되었습니다.");
 			}
 
 			// ---------- Function ----------
@@ -180,38 +178,68 @@
 				m_geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
 					if (status === kakao.maps.services.Status.OK) {
 						var valid_road_address = !!result[0].road_address;
-						m_road_addr = valid_road_address ? result[0].road_address.address_name : "";
-						m_addr = result[0].address.address_name;
+						var road_addr = valid_road_address ? result[0].road_address.address_name : "";
+						var addr = result[0].address.address_name;
 						if (completion)
 						{
-							completion(m_addr);
+							completion(addr);
 						}
 
 						// 키워드로 장소를 검색합니다
-						ps.keywordSearch(m_addr, placesSearchCB);
-//						ps.keywordSearch(m_addr, function(places, status, pagination){
-//							if (status === kakao.maps.services.Status.OK) {
-//								// 총개수 로그
-//								console.log(pagination.totalCount);
-//								// 장소명 로그
-//								for(var i=0; i < places.length; i++){
-//									console.log(places[i].place_name, places[i].place_url);
-//								}
-//							}
-//						}); 
+						// ps.keywordSearch(addr, placesSearchCB);
+
+						var arr_places = [];
+						ps.keywordSearch(addr, function(places, status, pagination){
+							// 검색 목록 표출
+							arr_places.push(places);
+							//displayPlaces(places);
+
+							log("페이지 조회: "+ pagingnation.current +"/"+ pagingnation.last);
+
+							if (status === kakao.maps.services.Status.OK) {
+								// 정상적으로 검색 완료
+								log('검색 결과 있음');
+
+								// 총개수 로그
+								console.log(pagination.totalCount);
+
+								// 장소명 로그
+								for(var i=0; i < places.length; i++){
+									console.log(places[i].place_name, places[i].place_url);
+								}
+
+								for (var i = 1; i <= pagination.last; i++)
+								{
+									
+								} 
+								pagingation.hasNextPage
+
+							} else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+								log('검색 결과가 존재하지 않습니다.');
+								//alert('검색 결과가 존재하지 않습니다.');
+							} else if (status === kakao.maps.services.Status.ERROR) {
+								log('검색 결과가 존재하지 않습니다.');
+							}
+
+							if( pagingnation.current < pagingnation.last ){
+								pagingnation.nextPage();
+							}else{
+								displayPlaces(arr_places);
+							}
+						});
 
 						// 인포윈도우 컨텐츠 설정
 						var content = '<div class="bAddr">' +
 									  '<span class="title">법정동 주소정보</span>';
 						if (valid_road_address) { // 도로명 주소 존재 시
-							content += '<div>도로명주소 : ' + m_road_addr + '</div>';
+							content += '<div>도로명주소 : ' + road_addr + '</div>';
 						}
-						content += '<div>지번 주소 : ' + m_addr + '</div>';
+						content += '<div>지번 주소 : ' + addr + '</div>';
 
 						if (valid_road_address) { // 도로명 주소 존재 시
-							content += '<input type="button" onclick="btn_copy_road_address(\''+m_road_addr+'\')" value="도로명주소 복사" />';
+							content += '<input type="button" onclick="btn_copy_road_address(\'' + road_addr + '\')" value="도로명주소 복사" />';
 						}
-						content += '<input type="button" onclick="btn_copy_address(\'' + m_addr + '\')" value="지번주소 복사" />';
+						content += '<input type="button" onclick="btn_copy_address(\'' + addr + '\')" value="지번주소 복사" />';
 						content += '</div>';
 						log(content);
 						
@@ -270,7 +298,6 @@
 				} else if (status === kakao.maps.services.Status.ERROR) {
 					log('검색 결과가 존재하지 않습니다.');
 					return;
-
 				}
 			}
 
