@@ -1,0 +1,13 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "2J4TL3A4P6.com.banaple.BanapressoApp",
+            "paths": ["*"]
+            },
+            {
+            "appID": "2J4TL3A4P6.com.banaple.FoodProStaff",
+            "paths": ["*"]
+        }]
+    }
+}
